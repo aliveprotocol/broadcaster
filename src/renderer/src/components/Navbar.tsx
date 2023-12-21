@@ -1,15 +1,14 @@
 import { useColorMode, IconButton, Box } from '@chakra-ui/react'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
-import React from 'react'
-import { Outlet } from 'react-router-dom'
+import { ReactNode } from 'react'
 
-const Navbar: React.FC = () => {
+const Navbar = ({ children }: { children: ReactNode }) => {
   const { colorMode, toggleColorMode } = useColorMode()
 
   return (
     <>
       <Box pos={'fixed'} top={0} h={'30px'} w={'100%'} style={{ WebkitAppRegion: 'drag' }} />
-      <Outlet />
+      {children}
       <Box
         pos={'fixed'}
         zIndex={10}
