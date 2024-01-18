@@ -4,6 +4,7 @@ import { inputAnatomy } from '@chakra-ui/anatomy'
 import { ChakraProvider, extendTheme, createMultiStyleConfigHelpers } from '@chakra-ui/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App'
+import { AppSettings } from './components/AppSettingsProvider'
 
 const { defineMultiStyleConfig } = createMultiStyleConfigHelpers(inputAnatomy.keys)
 
@@ -62,7 +63,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <AppSettings>
+          <App />
+        </AppSettings>
       </QueryClientProvider>
     </ChakraProvider>
   </React.StrictMode>

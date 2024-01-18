@@ -1,13 +1,33 @@
-import { useColorMode, IconButton, Box } from '@chakra-ui/react'
+import {
+  useColorMode,
+  useDisclosure,
+  IconButton,
+  Box,
+  Button,
+  Select,
+  HStack,
+  Input,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  ModalFooter
+} from '@chakra-ui/react'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
-import { ReactNode } from 'react'
+import { ReactNode, useContext, useState } from 'react'
+import { AppSettingsContext, nodeList } from './AppSettings'
 
 const Navbar = ({ children }: { children: ReactNode }) => {
   const { colorMode, toggleColorMode } = useColorMode()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { node, setNode, isCustomRPC, setIsCustomRPC } = useContext(AppSettingsContext)
+  const [cstmRPCInput, setCstmRPCInput] = useState('')
 
   return (
     <>
-      <Box pos={'fixed'} top={0} h={'30px'} w={'100%'} style={{ WebkitAppRegion: 'drag' }} />
+      <Box pos={'fixed'} top={0} h={'50px'} w={'100%'} style={{ WebkitAppRegion: 'drag' }} />
       {children}
       <Box
         pos={'fixed'}
@@ -19,13 +39,64 @@ const Navbar = ({ children }: { children: ReactNode }) => {
         padding={'10px'}
         _dark={{ bg: '' }}
       >
-        <IconButton
-          float={'right'}
-          onClick={toggleColorMode}
-          icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-          aria-label="Toggle color mode"
-        />
+        <HStack spacing={3} float={'right'}>
+          <Select
+            w={200}
+            float={'right'}
+            value={node}
+            onChange={(ev) => {
+              ev.preventDefault()
+              if (ev.target.value === 'Custom RPC...') {
+                onOpen()
+              } else {
+                setIsCustomRPC(false)
+                setNode(ev.target.value)
+              }
+            }}
+          >
+            {nodeList.map((val, i) => (
+              <option key={i} value={val}>
+                {val}
+              </option>
+            ))}
+            {isCustomRPC ? <option value={node}>[Custom] {node}</option> : null}
+          </Select>
+          <IconButton
+            float={'right'}
+            onClick={toggleColorMode}
+            icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+            aria-label="Toggle color mode"
+          />
+        </HStack>
       </Box>
+      <Modal onClose={onClose} isOpen={isOpen} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Custom RPC</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Input
+              type="text"
+              placeholder="Enter Hive RPC node URL"
+              onChange={(evt) => setCstmRPCInput(evt.target.value)}
+            ></Input>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              variant={'alive'}
+              mr={3}
+              onClick={() => {
+                setIsCustomRPC(true)
+                setNode(cstmRPCInput)
+                onClose()
+              }}
+            >
+              Save
+            </Button>
+            <Button onClick={onClose}>Close</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   )
 }

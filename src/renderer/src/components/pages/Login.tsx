@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Button, FormControl, FormLabel, Input, Container, Flex } from '@chakra-ui/react'
+import { Box, Button, FormControl, FormLabel, Input, Container, Flex, useToast } from '@chakra-ui/react'
 
 interface State {
   username: string
@@ -11,7 +11,12 @@ const LoginPage: React.FC = () => {
     username: '',
     key: ''
   })
-  const [isPlaintextKey, setIsPlaintextKey] = useState(false)
+  const [isPlaintextKey, setIsPlaintextKey] = useState(true)
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
+  const toast = useToast({
+    position: 'bottom-left',
+    isClosable: true
+  })
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -23,8 +28,21 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
-    // Your authentication logic goes here
-    console.log(creds)
+    if (!creds.username)
+      return void toast({
+        title: 'Error',
+        description: 'HIVE username is required',
+        status: 'error'
+      })
+    if (isPlaintextKey) {
+      if (!creds.key)
+        return void toast({
+          title: 'Error',
+          description: 'HIVE posting key is required',
+          status: 'error'
+        })
+      setIsLoggingIn(true)
+    }
   }
 
   return (
@@ -35,24 +53,23 @@ const LoginPage: React.FC = () => {
             <form onSubmit={handleSubmit}>
               <FormControl id="username">
                 <FormLabel>HIVE Username</FormLabel>
-                <Input type="text" name="username" value={creds.username} onChange={handleChange} />
+                <Input type="text" name="username" value={creds.username} onChange={handleChange} disabled={isLoggingIn} />
               </FormControl>
 
               {isPlaintextKey ? (
                 <FormControl id="key" mt="6">
                   <FormLabel>Private Posting Key</FormLabel>
-                  <Input type="password" name="key" value={creds.key} onChange={handleChange} />
+                  <Input type="password" name="key" value={creds.key} onChange={handleChange} disabled={isLoggingIn} />
                 </FormControl>
               ) : null}
 
-              <Button mt={6} variant={'alive'} type="submit">
+              <Button mt={6} variant={'alive'} type="submit" disabled={isLoggingIn}>
                 Log In{!isPlaintextKey ? ' with HiveAuth' : ''}
               </Button>
-              {isPlaintextKey ? (
-                <Button mt={6} ml={3} onClick={() => setIsPlaintextKey(false)}>
-                  Use HiveAuth
-                </Button>
-              ) : (
+              {isPlaintextKey ? null : (
+                // <Button mt={6} ml={3} onClick={() => setIsPlaintextKey(false)}>
+                //   Use HiveAuth
+                // </Button>
                 <Button mt={6} ml={3} onClick={() => setIsPlaintextKey(true)}>
                   Use Plaintext Key
                 </Button>
