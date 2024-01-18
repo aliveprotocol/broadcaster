@@ -1,23 +1,5 @@
 import { createContext } from 'react'
 
-export interface AppState {
-  node: string
-  setNode: (newNode: string) => void
-
-  isCustomRPC: boolean
-  setIsCustomRPC: (newIsCustomRPC: boolean) => void
-}
-
-const defaultSettings: AppState = {
-  node: 'techcoderx.com',
-  setNode: () => {},
-
-  isCustomRPC: false,
-  setIsCustomRPC: () => {}
-}
-
-export const AppSettingsContext = createContext<AppState>(defaultSettings)
-
 export const nodeList = [
   'techcoderx.com',
   'api.hive.blog',
@@ -36,3 +18,21 @@ export const nodeList = [
   'rpc.mahdiyari.info',
   'Custom RPC...'
 ]
+
+export interface AppState {
+  node: string
+  setNode: (newNode: string) => void
+
+  isCustomRPC: boolean
+  setIsCustomRPC: (newIsCustomRPC: boolean) => void
+}
+
+const defaultSettings: AppState = {
+  node: nodeList[0],
+  setNode: () => {},
+
+  isCustomRPC: false,
+  setIsCustomRPC: () => {}
+}
+
+export const AppSettingsContext = createContext<AppState>(defaultSettings)

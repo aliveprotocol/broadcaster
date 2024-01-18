@@ -37,7 +37,7 @@ const Navbar = ({ children }: { children: ReactNode }) => {
         height={'60px'}
         boxShadow={'0px -2px 10px rgba(0, 0, 0, 0.05)'}
         padding={'10px'}
-        _dark={{ bg: '' }}
+        _dark={{ bg: '#242526' }}
       >
         <HStack spacing={3} float={'right'}>
           <Select

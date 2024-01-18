@@ -2,6 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { inputAnatomy } from '@chakra-ui/anatomy'
 import { ChakraProvider, extendTheme, createMultiStyleConfigHelpers } from '@chakra-ui/react'
+import { mode } from '@chakra-ui/theme-tools'
+import type { StyleFunctionProps } from '@chakra-ui/theme-tools'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App'
 import { AppSettings } from './components/AppSettingsProvider'
@@ -38,6 +40,13 @@ const theme = extendTheme({
     useSystemColorMode: true,
     initialColorMode: 'dark'
   },
+  styles: {
+    global: (props: StyleFunctionProps) => ({
+      body: {
+        background: mode('#ffffff', '#1b1b1d')(props)
+      }
+    })
+  },
   components: {
     Button: {
       variants: {
@@ -53,6 +62,7 @@ const theme = extendTheme({
         })
       }
     },
+    Select: inputTheme,
     Input: inputTheme
   }
 })
